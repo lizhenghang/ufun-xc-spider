@@ -1,0 +1,19 @@
+#何欢-公司mysql数据库:
+jdbc.mysql.driver=com.mysql.jdbc.Driver
+jdbc.mysql.url.master=jdbc:mysql://120.78.76.240:3306/ufun?useUnicode=true&characterEncoding=utf-8&noAccessToProcedureBodies=true
+jdbc.mysql.username.master=root
+jdbc.mysql.password.master=ufun.biz
+
+ 何欢-公司redis数据库:
+redis.ip=120.78.76.240
+redis.port=6379
+redis.password=hehuan1211
+redis.pool.maxIdle=-1
+redis.pool.testOnBorrow=
+redis.pool.testOnReturn=
+
+SVN账号
+lizhenghang
+lzh0308
+svn://120.78.76.240/ufunspider
+SVN安装最好就默认C盘，安装时勾选使用命令（第一项will be install），并且允许杀毒安全软件的拦截，才能在IDEA中使用

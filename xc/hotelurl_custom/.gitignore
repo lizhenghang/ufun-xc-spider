@@ -1,0 +1,22 @@
+# IDEA #
+.idea/
+*.iml
+
+# Eclipse #
+.settings/
+.metadata/
+.classpath
+.project
+
+# Maven #
+target/
+
+# Node.js #
+node_modules/
+
+# Mac #
+.DS_Store
+
+
+log/
+*.log

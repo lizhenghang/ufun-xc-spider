@@ -1,0 +1,10 @@
+resource目录下的三哥配置文件是SB的核心文件
+SB启动类只会读取其中一个。
+application.properties和application-test.properties内容一致，前者用于IDEA中启动使用，后者是以jar包运行时启动，都是测试开发环境下使用
+application-prod.properties是正是线上使用的，也是以jar包的方式运行
+
+以jar命令运行jar包的时候指定使用配置文件的命令如下：
+
+java -jar -Dspring.profiles.active=prod xxx.jar
+
+spring.profiles.active属性的值就是application-{xxx}.properties的xxx
