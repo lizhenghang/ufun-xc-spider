@@ -75,6 +75,7 @@ public class ConsumeForQueueWork implements Runnable {
                 genUrl(hotel);
                 log.info("******生成url成功*********");
             } catch (JedisException e) {
+                log.warn("redis操作异常："+e.toString());
                 jedis.close();
                 jedis = jedisPool.getResource();
             } catch (Exception e) {
