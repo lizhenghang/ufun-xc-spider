@@ -97,7 +97,7 @@ public class UseUrlJob implements Runnable {
                 use(urlList);
                 log.info("线程执行use成功");
             } catch (JedisException e) {
-                log.warn(e.toString());
+                log.warn("redis操作异常："+e.toString());
                 jedisTool.close();
                 jedisTool = jedisPool.getResource();
             } catch (Exception e) {

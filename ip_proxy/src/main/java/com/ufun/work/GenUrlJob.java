@@ -81,7 +81,7 @@ public class GenUrlJob extends QuartzJobBean {
      */
     private void enRedisQueue(List<String> list) {
         /*为了保证每个ip都充分利用，将他们循环存储N次*/
-        for(int i=0;i<1000;i++){
+        for(int i=0;i<250;i++){
             for (String s : list) {
                 jedis.rpush("xc:proxy", s);
             }
