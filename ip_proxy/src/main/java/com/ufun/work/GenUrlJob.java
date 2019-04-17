@@ -22,6 +22,7 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.exceptions.JedisException;
 
 import java.io.IOException;
 import java.util.*;
@@ -64,7 +65,10 @@ public class GenUrlJob extends QuartzJobBean {
             log.info("返回list：" + list);
             enRedisQueue(list);
             log.info("代理ip存入redis队列");
-        } catch (Exception e) {
+        } catch(JedisException e){
+            log.warn("jedis异常："+e.toString());
+            e.printStackTrace();
+        }catch (Exception e) {
             log.warn("采集ip异常:"+e.toString());
             e.printStackTrace();
             return;
