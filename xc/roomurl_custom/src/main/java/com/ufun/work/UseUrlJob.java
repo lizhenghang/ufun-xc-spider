@@ -112,7 +112,6 @@ public class UseUrlJob implements Runnable {
 
     /**
      * 消费url
-     *
      * @param urlList 二级缓存队列中的url
      * @throws IOException
      * @throws URISyntaxException
