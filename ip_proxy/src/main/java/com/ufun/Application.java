@@ -22,7 +22,7 @@ public class Application {
          * springboot启动入口,MVC相关功能。
          */
         ApplicationContext applicationContext=SpringApplication.run(Application.class, args);
-        SpringApplicationContextUtil.setApplicationContext(applicationContext);//测试分支自建
+        SpringApplicationContextUtil.setApplicationContext(applicationContext);//测试分支自建dev
 
     }
 }
