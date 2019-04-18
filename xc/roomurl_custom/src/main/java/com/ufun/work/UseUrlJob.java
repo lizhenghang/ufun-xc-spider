@@ -145,32 +145,29 @@ public class UseUrlJob implements Runnable {
         PreparedStatement pst = null;
         Connection conn = null;
         String table = "room_" + CalendarUtils.getDateString("yyyy_MM_dd");//room_yyyy-MM-dd
-        String sql ="INSERT INTO `ufun`.`"+table+"`(" +
-                "`id`, `room_id`, `room_type`, `bed_count`, `bed_type`, `break_fask`, " +
-                "`services`, `peoples`, `data_policy`, `room_price`, `residue_room`, `book_way`, " +
-                "`area`, `floor_level`, `data_price`, `data_pricedisplay`, `hotel_id`, `hotel_sno`, " +
-                "`hotel_address`, `hotel_name`, `lat`, `lon`, `tel`, `create_time`, `update_time`, `type`, " +
-                "`source`, `start_Time`, `end_Time`, `start_time_str`, `end_time_str`) " +
-                "VALUES (null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        String sql ="INSERT INTO `ufun`.`"+table+"`(`id`, `room_id`, `room_type`, `bed_count`, `bed_type`, `break_fask`, " +
+                "`services`, `peoples`, `data_policy`, `room_price`, `residue_room`, `book_way`, `area`, `floor_level`, " +
+                "`data_price`, `data_pricedisplay`, `hotel_id`, `hotel_sno`, `hotel_address`, `hotel_name`, `lat`, `lon`, " +
+                "`tel`, `create_time`, `update_time`, `type`, `source`, `start_Time`, `end_Time`, `start_time_str`, " +
+                "`end_time_str`, `roomId2`, `roomName`, `networkwifi`, `networklan`, `baseroominfo`,`room_total`) " +
+                "VALUES (NULL,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
             conn = hikariDataSource.getConnection();
             pst = conn.prepareStatement(sql);
             for (Room room:roomList) {
-                pst.setObject(1, room.getRoomId());             pst.setObject(2, room.getRoomType());
-                pst.setObject(3, room.getBedCount());           pst.setObject(4, room.getBedType());
-                pst.setObject(5, room.getBreakfast());          pst.setObject(6, room.getServices());
-                pst.setObject(7, room.getPeoples());            pst.setObject(8, room.getDataPolicy());
-                pst.setObject(9, room.getRoomPrice());          pst.setObject(10, room.getResidueRoom());
-                pst.setObject(11, room.getBookWay());           pst.setObject(12, room.getArea());
-                pst.setObject(13, room.getFloorLevel());        pst.setObject(14, room.getDataPrice());
-                pst.setObject(15, room.getDataPricedisplay());  pst.setObject(16, room.getHotelId());
-                pst.setObject(17, room.getHotelSno());          pst.setObject(18, room.getHotelAddress());
-                pst.setObject(19, room.getHotelName());         pst.setObject(20, room.getLat());
-                pst.setObject(21, room.getLon());               pst.setObject(22, room.getTel());
-                pst.setObject(23, room.getCreateTime());        pst.setObject(24, room.getUpdateTime());
-                pst.setObject(25, room.getType());              pst.setObject(26, room.getSource());
-                pst.setObject(27, room.getStartTime());         pst.setObject(28, room.getEndTime());
-                pst.setObject(29, room.getStartTimeStr());      pst.setObject(30, room.getEndTimeStr());
+                pst.setObject(1, room.getRoomId());pst.setObject(2, room.getRoomType());pst.setObject(3, room.getBedCount());
+                pst.setObject(4, room.getBedType());pst.setObject(5, room.getBreakfast());pst.setObject(6, room.getServices());
+                pst.setObject(7, room.getPeoples());pst.setObject(8, room.getDataPolicy());pst.setObject(9, room.getRoomPrice());
+                pst.setObject(10, room.getResidueRoom());pst.setObject(11, room.getBookWay()); pst.setObject(12, room.getArea());
+                pst.setObject(13, room.getFloorLevel());pst.setObject(14, room.getDataPrice());pst.setObject(15, room.getDataPricedisplay());
+                pst.setObject(16, room.getHotelId());pst.setObject(17, room.getHotelSno());pst.setObject(18, room.getHotelAddress());
+                pst.setObject(19, room.getHotelName());pst.setObject(20, room.getLat());pst.setObject(21, room.getLon());
+                pst.setObject(22, room.getTel());pst.setObject(23, room.getCreateTime());pst.setObject(24, room.getUpdateTime());
+                pst.setObject(25, room.getType()); pst.setObject(26, room.getSource());pst.setObject(27, room.getStartTime());
+                pst.setObject(28, room.getEndTime());pst.setObject(29, room.getStartTimeStr());pst.setObject(30, room.getEndTimeStr());
+                pst.setObject(31, room.getRoomId2());pst.setObject(32,room.getRoomName());pst.setObject(33,room.getNetworkwifi());
+                pst.setObject(34, room.getNetworklan());pst.setObject(35,room.getBaseroominfo());pst.setObject(36,room.getRoomTotal());
+
                 pst.addBatch();
             }
             pst.executeBatch();
@@ -220,11 +217,13 @@ public class UseUrlJob implements Runnable {
         Document doc = Jsoup.parseBodyFragment(html);
         Element body = doc.body();
         Elements timeElement=body.getElementsByClass("btns_base22 J_hotel_order");
+        /**获取当前数据的时间参数*/
         String str=timeElement.get(0).attr("bookparam");
-        System.out.println(str);
         JSONObject json=JSON.parseObject(str);
         String startTime=json.getString("StartDate");
         String endTime=json.getString("DepDate");
+
+        /*遍历每个房间信息*/
         Elements elements = body.getElementsByClass("child_name J_Col_RoomName");
         List<Room> roomList = new ArrayList<Room>();
         for (Element element : elements) {
@@ -237,6 +236,29 @@ public class UseUrlJob implements Runnable {
             room.setHotelSno(hotelId);
             room.setStartTimeStr(startTime);
             room.setEndTimeStr(endTime);
+            room.setRoomId(element.attr("data-roomid"));
+            room.setPeoples(room.getBedCount());
+            room.setNetworklan(element.attr("data-networklan"));
+            room.setNetworkwifi(element.attr("data-networkwifi"));
+            room.setSource("友房科技");
+            room.setType("携程网");
+            room.setBaseroominfo(element.attr("data-baseroominfo"));
+            String infoStr=room.getBaseroominfo();
+            JSONObject info=JSON.parseObject(infoStr);
+            if(info!=null&&!"".equals(info)){
+                String baseInfo=info.getString("BaseRoomInfo");
+                if(!"".equals(baseInfo)&&baseInfo!=null){
+                    room.setBaseroominfo(baseInfo);
+                    String[] arr=baseInfo.split("<span class=\"line\">|</span>");
+                    room.setArea(arr[0]);
+                    room.setFloorLevel(arr[2]);
+                    room.setBedType(arr[4]);
+                    room.setPeoples(arr[6]);
+                }
+                room.setRoomName(info.getString("RoomName"));
+                room.setRoomId2(info.getString("RoomID"));
+                room.setRoomTotal(info.getString("RoomTotalNum"));
+            }
             roomList.add(room);
         }
         return roomList;

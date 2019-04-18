@@ -15,22 +15,24 @@ public class Room {
 
     private String id;
     private String roomId;
+    private String roomId2;
+    private String roomName;            //房名
     private String roomType;            //房型
     private String bedType;             //床型
     private String bedCount;           //床数量
     private String breakfast;           //早餐
-    private String[] services;            //设施服务
-    private Integer peoples;             //入住人数
+    private String services;            //设施服务
+    private String peoples;             //入住人数
     private String dataPolicy;         //促销优惠减100的策略都是3，貌似3就代表=100元
     private String roomPrice;           //真实价格，即dataPrice减去政策优惠后的价格
     private Integer residueRoom;         //剩余房间
     private String bookWay;             //预订方式
-    private double area;                //房间面积
+    private String area;                //房间面积
     private String floorLevel;          //楼层
     private String isWindow;            //是否有窗户
     private String dataPrice;           //真实价格，用横线划掉的价格
     private String dataPricedisplay;    //
-    private Integer hotelId;             //所属id
+    private Integer hotelId;         //所属id
     private String hotelSno;         //所属酒店编号
     private String hotelAddress;     //所属酒店地址
     private String hotelName;        //所属酒店名称
@@ -38,6 +40,7 @@ public class Room {
     private String endTimeStr;       //结束时间
     private Date startTime;         //开始时间
     private Date endTime;           //结束时间
+    private String roomTotal;       //房间总数
     private String lat;
     private String lon;
     private Date createTime;
@@ -45,6 +48,9 @@ public class Room {
     private String type;
     private String source;
     private String tel;
+    private String networkwifi;
+    private String networklan;
+    private String baseroominfo;    //  房间基础信息
 
     public String getTel() {
         return tel;
@@ -126,19 +132,19 @@ public class Room {
         this.breakfast = breakfast;
     }
 
-    public String[] getServices() {
+    public String getServices() {
         return services;
     }
 
-    public void setServices(String[] services) {
+    public void setServices(String services) {
         this.services = services;
     }
 
-    public Integer getPeoples() {
+    public String getPeoples() {
         return peoples;
     }
 
-    public void setPeoples(Integer peoples) {
+    public void setPeoples(String peoples) {
         this.peoples = peoples;
     }
 
@@ -174,11 +180,11 @@ public class Room {
         this.bookWay = bookWay;
     }
 
-    public double getArea() {
+    public String getArea() {
         return area;
     }
 
-    public void setArea(double area) {
+    public void setArea(String area) {
         this.area = area;
     }
 
@@ -310,16 +316,65 @@ public class Room {
         this.endTime = endTime;
     }
 
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
+
+    public String getNetworkwifi() {
+        return networkwifi;
+    }
+
+    public void setNetworkwifi(String networkwifi) {
+        this.networkwifi = networkwifi;
+    }
+
+    public String getNetworklan() {
+        return networklan;
+    }
+
+    public void setNetworklan(String networklan) {
+        this.networklan = networklan;
+    }
+
+    public String getBaseroominfo() {
+        return baseroominfo;
+    }
+
+    public void setBaseroominfo(String baseroominfo) {
+        this.baseroominfo = baseroominfo;
+    }
+
+    public String getRoomId2() {
+        return roomId2;
+    }
+
+    public void setRoomId2(String roomId2) {
+        this.roomId2 = roomId2;
+    }
+
+    public String getRoomTotal() {
+        return roomTotal;
+    }
+
+    public void setRoomTotal(String roomTotal) {
+        this.roomTotal = roomTotal;
+    }
+
     @Override
     public String toString() {
         return "Room{" +
                 "id='" + id + '\'' +
                 ", roomId='" + roomId + '\'' +
+                ", roomName='" + roomName + '\'' +
                 ", roomType='" + roomType + '\'' +
                 ", bedType='" + bedType + '\'' +
                 ", bedCount='" + bedCount + '\'' +
                 ", breakfast='" + breakfast + '\'' +
-                ", services=" + Arrays.toString(services) +
+                ", services='" + services + '\'' +
                 ", peoples=" + peoples +
                 ", dataPolicy='" + dataPolicy + '\'' +
                 ", roomPrice='" + roomPrice + '\'' +
@@ -344,6 +399,10 @@ public class Room {
                 ", updateTime=" + updateTime +
                 ", type='" + type + '\'' +
                 ", source='" + source + '\'' +
+                ", tel='" + tel + '\'' +
+                ", networkwifi='" + networkwifi + '\'' +
+                ", networklan='" + networklan + '\'' +
+                ", baseroominfo='" + baseroominfo + '\'' +
                 '}';
     }
 }

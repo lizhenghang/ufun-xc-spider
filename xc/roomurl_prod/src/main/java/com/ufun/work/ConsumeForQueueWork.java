@@ -100,7 +100,7 @@ public class ConsumeForQueueWork implements Runnable {
             String eleven = getElevenParam(hotel);
             log.info("获取eleven成功：" + eleven);
             UrlJsonObject urlJsonObject = encap(hotel, eleven,  arr[i-1],arr[i]);//封住指定开始时间和结束时间的url
-            log.info("封装url成功---[酒店："+hotel.getSno()+",开始时间："+arr[0]+",结束时间："+arr[1]+"]");
+            log.info("封装url成功---[酒店："+hotel.getSno()+",开始时间："+arr[i-1]+",结束时间："+arr[i]+"]");
             enRedisQueue(urlJsonObject, redisName);//以开始时间为redis缓存名称
         }
     }
@@ -153,9 +153,7 @@ public class ConsumeForQueueWork implements Runnable {
         paramMap.put("showspothotel", "T");
         paramMap.put("IsDecoupleSpotHotelAndGroup", "F");
         paramMap.put("startDate", start);
-        log.info("设置开始时间:"+start);
         paramMap.put("depDate", end);
-        log.info("设置结束时间"+end);
         paramMap.put("IsFlash", "F");
         paramMap.put("RequestTravelMoney", "F");
         paramMap.put("contyped", "0");

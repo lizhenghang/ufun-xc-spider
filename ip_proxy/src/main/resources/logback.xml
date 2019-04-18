@@ -1,6 +1,6 @@
 <configuration>
     <property name="log_name" value="ip_proxy"/>
-    <property name="log_home" value="E:/workspace--IDEA/PC/ip_proxy"/>
+    <property name="log_home" value="E:/workspace--IDEA/ufun-xc-spider/ip_proxy"/>
     <property name="log_dir" value="log"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
