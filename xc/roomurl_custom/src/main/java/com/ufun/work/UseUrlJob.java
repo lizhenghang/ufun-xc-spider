@@ -237,7 +237,7 @@ public class UseUrlJob implements Runnable {
             room.setStartTimeStr(startTime);
             room.setEndTimeStr(endTime);
             room.setRoomId(element.attr("data-roomid"));
-            room.setPeoples(room.getBedCount());
+            room.setPeoples(room.getBedCount()+"人");
             room.setNetworklan(element.attr("data-networklan"));
             room.setNetworkwifi(element.attr("data-networkwifi"));
             room.setSource("友房科技");
@@ -250,10 +250,18 @@ public class UseUrlJob implements Runnable {
                 if(!"".equals(baseInfo)&&baseInfo!=null){
                     room.setBaseroominfo(baseInfo);
                     String[] arr=baseInfo.split("<span class=\"line\">|</span>");
-                    room.setArea(arr[0]);
-                    room.setFloorLevel(arr[2]);
-                    room.setBedType(arr[4]);
-                    room.setPeoples(arr[6]);
+                    StringBuilder sb=new StringBuilder();
+                    for (String s : arr) {
+                        sb.append(s);
+                        if(s.contains("平方米"))
+                            room.setArea(s);
+                        if(s.contains("层"));
+                            room.setFloorLevel(s);
+                        if(s.contains("床")&&s.contains("张"))
+                            room.setBedType(s);
+                        room.setPeoples(arr[arr.length-1]);
+                    }
+                    room.setBaseroominfo(sb.toString());
                 }
                 room.setRoomName(info.getString("RoomName"));
                 room.setRoomId2(info.getString("RoomID"));

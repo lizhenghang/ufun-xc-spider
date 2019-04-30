@@ -17,6 +17,25 @@ public class CalendarUtils {
         calendar.setTime(new Date());
     }
 
+    /**
+     * 获取明天的日期字符串
+     * @param pattern
+     * @return
+     */
+    public static String getTomorrowDateString(String pattern) {
+        reset();
+        SimpleDateFormat sdf = getDateFormat(pattern);
+        Date date = calendar.getTime();
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        date = calendar.getTime();
+        return sdf.format(date);
+    }
+
+    /**
+     *
+     * @param pattern
+     * @return
+     */
     public static String getDateString(String pattern){
         reset();
         Date date=calendar.getTime();

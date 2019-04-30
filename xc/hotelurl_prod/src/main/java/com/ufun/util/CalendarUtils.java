@@ -11,58 +11,79 @@ import java.util.Date;
  */
 public class CalendarUtils {
 
-    private static Calendar calendar=Calendar.getInstance();
+    private static Calendar calendar = Calendar.getInstance();
 
-    private static void reset(){
+    private static void reset() {
         calendar.setTime(new Date());
     }
 
-    public static String getDateString(String pattern){
+    /**
+     * 获取当日时间字符串
+     *
+     * @param pattern
+     * @return
+     */
+    public static String getDateString(String pattern) {
         reset();
-        Date date=calendar.getTime();
-        SimpleDateFormat sdf=getDateFormat(pattern);
+        Date date = calendar.getTime();
+        SimpleDateFormat sdf = getDateFormat(pattern);
         return sdf.format(date);
     }
 
     /**
-     * 获取一个指定模式的时间格式化工具
+     * 获取明天的日期字符串
      * @param pattern
      * @return
      */
-    public static SimpleDateFormat getDateFormat(String pattern){
-        SimpleDateFormat dateFormat=null;
-        if(pattern==null||"".equals(pattern)){
-            dateFormat=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        }else{
-            dateFormat=new SimpleDateFormat(pattern);
+    public static String getTomorrowDateString(String pattern) {
+        reset();
+        SimpleDateFormat sdf = getDateFormat(pattern);
+        Date date = calendar.getTime();
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        date = calendar.getTime();
+        return sdf.format(date);
+    }
+
+    public static void main(String[] args) {
+        String str=getTomorrowDateString("yyyy-MM-dd");
+        System.out.println(str);
+    }
+
+    /**
+     * 获取一个指定模式的时间格式化工具
+     *
+     * @param pattern
+     * @return
+     */
+    public static SimpleDateFormat getDateFormat(String pattern) {
+        SimpleDateFormat dateFormat = null;
+        if (pattern == null || "".equals(pattern)) {
+            dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        } else {
+            dateFormat = new SimpleDateFormat(pattern);
         }
         return dateFormat;
     }
 
     /**
      * 获取指定追加天数的数组
-     * @param addNum 增加多少天
+     *
+     * @param addNum  增加多少天
      * @param pattern
      * @return
      */
-    public static String[] getCallendarString(int addNum,String pattern){
+    public static String[] getCallendarString(int addNum, String pattern) {
         reset();
-        String[] arr=new String[addNum+1];
-        SimpleDateFormat sdf=getDateFormat(pattern);
-        Date date=calendar.getTime();
-        arr[0]=sdf.format(date);
+        String[] arr = new String[addNum + 1];
+        SimpleDateFormat sdf = getDateFormat(pattern);
+        Date date = calendar.getTime();
+        arr[0] = sdf.format(date);
         for (int i = 1; i < arr.length; i++) {
-            calendar.add(Calendar.DAY_OF_MONTH,1);
-            date=calendar.getTime();
-            arr[i]=sdf.format(date);
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            date = calendar.getTime();
+            arr[i] = sdf.format(date);
         }
         return arr;
     }
 
-    public static void main(String[] args) {
-        String[] arr= CalendarUtils.getCallendarString(1,"yyyy-MM-dd");
-        for (String s : arr) {
-            System.out.println(s);
-        }
-    }
 }
