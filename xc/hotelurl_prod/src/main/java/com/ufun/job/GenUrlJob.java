@@ -45,7 +45,8 @@ public class GenUrlJob extends QuartzJobBean {
         int count=555;
         Jedis jedis=jedisPool.getResource();
         jedis.del("xc:hotel");//每次执行都删除陈旧的数据
-        createTable();//创建当天的hotel表
+        createCurrTable();//创建当天的hotel表
+        createTommTable();
         while(page<count){
             try{
                 log.info("生产第"+page+"页URL");
@@ -73,13 +74,57 @@ public class GenUrlJob extends QuartzJobBean {
         log.info("-------------===========定时任务结束============-------------");
     }
 
+    private void createTommTable(){
+        Connection conn=null;
+        PreparedStatement pst=null;
+        try {
+        String table="hotel_"+ CalendarUtils.getTomorrowDateString("yyyy_MM_dd");//hotel_yyyy-MM--dd
+        String sql="CREATE TABLE IF NOT EXISTS `"+table+"` (\n" +
+                "  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',\n" +
+                "  `sno` varchar(80) DEFAULT NULL COMMENT '酒店编号',\n" +
+                "  `address` varchar(255) DEFAULT NULL COMMENT '酒店地址',\n" +
+                "  `name` varchar(100) DEFAULT NULL COMMENT '酒店名称',\n" +
+                "  `url` varchar(155) DEFAULT NULL COMMENT '酒店链接',\n" +
+                "  `score` varchar(20) DEFAULT NULL COMMENT '酒店评分',\n" +
+                "  `star` varchar(50) DEFAULT NULL COMMENT '酒店星级',\n" +
+                "  `short_name` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '酒店简称',\n" +
+                "  `star_desc` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '酒店型号（舒适型，高档型）',\n" +
+                "  `dp_count` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '参与点赞用户',\n" +
+                "  `dp_score` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '好评率',\n" +
+                "  `is_single_rec` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,\n" +
+                "  `lat` varchar(100) DEFAULT NULL COMMENT '纬度',\n" +
+                "  `lon` varchar(100) DEFAULT NULL COMMENT '经度',\n" +
+                "  `tel` varchar(50) DEFAULT NULL COMMENT '电话',\n" +
+                "  `create_time` date DEFAULT NULL COMMENT '创建时间',\n" +
+                "  `update_time` date DEFAULT NULL COMMENT '更新时间',\n" +
+                "  `type` varchar(20) DEFAULT NULL COMMENT '类型',\n" +
+                "  PRIMARY KEY (`id`)\n" +
+                ") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='酒店信息表';";
+            conn=hikariDataSource.getConnection();
+            pst=conn.prepareStatement(sql);
+            int result=pst.executeUpdate();
+            log.info("创建表语句完成：result="+result);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                pst.close();
+                hikariDataSource.evictConnection(conn);
+            } catch (SQLException e) {
+                pst=null;
+                conn=null;
+                e.printStackTrace();
+            }
+        }
+    }
+
     /**
      * 创建当日的表
      * 每天定时任务执行即创建当日的表hotel_yyyy-MM--dd
      */
-    private void createTable() {
+    private void createCurrTable() {
         String table="hotel_"+ CalendarUtils.getDateString("yyyy_MM_dd");//hotel_yyyy-MM--dd
-        String sql="CREATE TABLE  IF NOT EXISTS `"+table+"` (\n" +
+        String sql="CREATE TABLE IF NOT EXISTS `"+table+"` (\n" +
                 "  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',\n" +
                 "  `sno` varchar(80) DEFAULT NULL COMMENT '酒店编号',\n" +
                 "  `address` varchar(255) DEFAULT NULL COMMENT '酒店地址',\n" +

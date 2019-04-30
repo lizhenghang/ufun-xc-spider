@@ -86,7 +86,7 @@ public class UseUrlJob implements Runnable {
                 }
                 use(urlList);
             } catch (Exception e) {
-                log.warn("操作异常"+e.toString());
+                log.warn("操作异常:"+e.toString());
                 e.printStackTrace();
                 continue;
             }finally {
@@ -121,7 +121,7 @@ public class UseUrlJob implements Runnable {
             JSONArray hotelArr = resultJson.getJSONArray("hotelPositionJSON");//拿到了成都市下的某一页的酒店列表数据
             log.info("解析hotelAll成功");
             insertDB(hotelArr);
-            log.info("批量入库成功");
+            log.info("*******************批量入库成功*********************");
         } catch (Exception e) {
             throw new Exception("use方法操作异常:" + e.toString());
         }

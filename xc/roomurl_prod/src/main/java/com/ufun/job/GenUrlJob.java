@@ -65,7 +65,8 @@ public class GenUrlJob extends QuartzJobBean {
         try {
             queue.clear();//每次定时任务开始之前都先清空queue
             //TODO 尝试删除指定天内的reids的key
-            createTable();
+            createTable();//创建当日的表
+            createTommTable();//创建明日的表
             log.info("——————==========定时任务开始执行===========—————");
             String table="hotel_"+ CalendarUtils.getDateString("yyyy_MM_dd");//得到当日操作的数据库表:hotel_yyyy-MM-dd
             log.info("当日要操作的数据库表:"+table);
@@ -80,15 +81,82 @@ public class GenUrlJob extends QuartzJobBean {
             e.printStackTrace();
         }
     }
+    private void createTommTable() throws Exception {
+        Connection connection=null;
+        PreparedStatement ps=null;
+        try {
+        String table="room_"+ CalendarUtils.getTomorrowDateString("yyyy_MM_dd");//room_yyyy-MM-dd
+        String sql="CREATE TABLE IF NOT EXISTS `"+table+"` (\n" +
+                "  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',\n" +
+                "  `room_id` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '房间主键',\n" +
+                "  `room_type` varchar(99) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '房型号',\n" +
+                "  `bed_count` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '床数量',\n" +
+                "  `bed_type` varchar(99) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '床型',\n" +
+                "  `break_fask` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '是否有早餐',\n" +
+                "  `services` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '服务设施',\n" +
+                "  `peoples` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '入住人数',\n" +
+                "  `data_policy` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '促销优惠政策',\n" +
+                "  `room_price` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '房间真实价格',\n" +
+                "  `residue_room` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '剩余房间',\n" +
+                "  `book_way` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '预订方式',\n" +
+                "  `area` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '面基',\n" +
+                "  `floor_level` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '楼层',\n" +
+                "  `data_price` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '原价',\n" +
+                "  `data_pricedisplay` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '吓人价',\n" +
+                "  `hotel_id` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '所属酒店id',\n" +
+                "  `hotel_sno` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '所属酒店编号',\n" +
+                "  `hotel_address` varchar(250) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '所属酒店地址',\n" +
+                "  `hotel_name` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '所属酒店名称',\n" +
+                "  `lat` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '所属酒店经纬度纬度',\n" +
+                "  `lon` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '所属酒店经纬度经度',\n" +
+                "  `tel` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '所属酒店电话',\n" +
+                "  `create_time` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '创建时间',\n" +
+                "  `update_time` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '更新时间',\n" +
+                "  `type` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '类型',\n" +
+                "  `source` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,\n" +
+                "  `start_Time` date DEFAULT NULL COMMENT '查询条件的开始时间',\n" +
+                "  `end_Time` date DEFAULT NULL COMMENT '查询条件的结束时间',\n" +
+                "  `start_time_str` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,\n" +
+                "  `end_time_str` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,\n" +
+                "  `roomId2` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '另外一个id',\n" +
+                "  `roomName` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '房间名称',\n" +
+                "  `networkwifi` varchar(6) DEFAULT NULL,\n" +
+                "  `networklan` varchar(6) DEFAULT NULL,\n" +
+                "  `baseroominfo` varchar(255) DEFAULT NULL,\n" +
+                "  `room_total` varchar(25) DEFAULT NULL,\n" +
+                "  PRIMARY KEY (`id`)\n" +
+                ") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='酒店房间详细表';";
 
+            connection=hikariDataSource.getConnection();
+            ps=connection.prepareStatement(sql);
+            int result=ps.executeUpdate();
+            System.out.println(result);
+        } catch (SQLException e) {
+            throw new Exception("创建表异常"+e.toString());
+        }finally {
+            try {
+                if(ps!=null)
+                    ps.close();
+                if(connection!=null)
+                    hikariDataSource.evictConnection(connection);
+            } catch (SQLException e) {
+                ps=null;
+                connection=null;
+            }
+        }
+    }
+    /**
+     * 创建表
+     * @throws Exception
+     */
     private void createTable() throws Exception {
         String table="room_"+ CalendarUtils.getDateString("yyyy_MM_dd");//room_yyyy-MM-dd
         String sql="CREATE TABLE IF NOT EXISTS `"+table+"` (\n" +
                 "  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',\n" +
                 "  `room_id` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '房间主键',\n" +
-                "  `room_type` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '房型号',\n" +
+                "  `room_type` varchar(99) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '房型号',\n" +
                 "  `bed_count` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '床数量',\n" +
-                "  `bed_type` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '床型',\n" +
+                "  `bed_type` varchar(99) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '床型',\n" +
                 "  `break_fask` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '是否有早餐',\n" +
                 "  `services` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '服务设施',\n" +
                 "  `peoples` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '入住人数',\n" +
